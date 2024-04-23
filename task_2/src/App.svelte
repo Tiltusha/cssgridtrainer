@@ -5,43 +5,46 @@
 </script>
 
 <main>
-  <div>
-    <a href="https://vitejs.dev" target="_blank" rel="noreferrer">
-      <img src={viteLogo} class="logo" alt="Vite Logo" />
-    </a>
-    <a href="https://svelte.dev" target="_blank" rel="noreferrer">
-      <img src={svelteLogo} class="logo svelte" alt="Svelte Logo" />
-    </a>
+  <div class="container">
+    <div class="currency">
+      <input type="number" id="amount-one" placeholder="0" value="1">
+      <select name="" id="currency-one">
+        <option value="USD" selected>USD</option>
+        <option value="EUR">EUR</option>
+        <option value="JPY">JPY</option>
+        <option value="RUB">RUB</option>
+      </select>
+    </div>
+    <div class="swap-rate-container">
+      <div class="rate" id="rate"></div>
+      <button class="btn" id="swap">Обменять!</button>
+    </div>
+    <div class="currency">
+      <input type="number" id="amount-two" placeholder="0">
+      <select name="" id="currency-two">
+        <option value="USD" >USD</option>
+        <option value="EUR">EUR</option>
+        <option value="JPY">JPY</option>
+        <option value="RUB" selected>RUB</option>
+      </select>
+    </div>
   </div>
-  <h1>Vite + Svelte</h1>
-
-  <div class="card">
-    <Counter />
-  </div>
-
-  <p>
-    Check out <a href="https://github.com/sveltejs/kit#readme" target="_blank" rel="noreferrer">SvelteKit</a>, the official Svelte app framework powered by Vite!
-  </p>
-
-  <p class="read-the-docs">
-    Click on the Vite and Svelte logos to learn more
-  </p>
 </main>
 
 <style>
-  .logo {
-    height: 6em;
-    padding: 1.5em;
-    will-change: filter;
-    transition: filter 300ms;
+  * {
+    box-sizing: border-box;
   }
-  .logo:hover {
-    filter: drop-shadow(0 0 2em #646cffaa);
+  main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-self: center;
+    height: 100vh;
+    margin: 0;
+    padding: 20px;
   }
-  .logo.svelte:hover {
-    filter: drop-shadow(0 0 2em #ff3e00aa);
-  }
-  .read-the-docs {
-    color: #888;
+  .container {
+    background-color: #fff;
   }
 </style>
