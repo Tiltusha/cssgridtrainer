@@ -2,11 +2,57 @@
   import svelteLogo from './assets/svelte.svg'
   import viteLogo from '/vite.svg'
   import Counter from './lib/Counter.svelte'
-  const currencyElement_one = document.getElementById('currency-one');
-  const currencyElement_two = document.getElementById('currency-two');
-  const amountElement_one = document.getElementById('amount-one');
-  const amountElement_two = document.getElementById('amount-two');
+  import { onMount } from 'svelte';
 
+  let amountFrom = 1;
+  let currencyFrom = 'USD';
+  let currencyTo = 'EUR';
+  let amountTo = 0;
+  let currencies = ['RUB', 'EUR', 'USD', 'KZT', 'CNY', 'JPY', 'BRL'];
+
+  // Выполняет запрос обменного курса и пересчитывает сумму в другой валюте
+  async function convertCurrency() {
+    // пытаемся получить данные об обменном курсе
+    try {
+      const response = await fetch(`https://v6.exchangerate-api.com/v6/db77e297e714e7f9a5902e42/latest/${currencyFrom}`);
+      // парсим полученные данные в JSON
+      const data = await response.json();
+      // извлекаем обменный курс из JSON
+      const exchangeRate = data.conversion_rates[currencyTo];
+      // пересчитываем сумму в другой валюте
+      amountTo = (amountFrom * exchangeRate).toFixed(2);
+    } catch (error) {
+      // в случае ошибки выводим сообщение в консоль
+      console.error('Ошибка при получении данных:', error);
+    }
+  }
+
+  // Вызывается при монтировании компонента и вызывает convertCurrency
+  onMount(convertCurrency);
+
+  // Обработчик изменения выбранной валюты (изменение типа: from или to)
+  function handleCurrencyChange(event, type) {
+    // меняем выбранную валюту в зависимости от типа (from или to)
+    if (type === 'from') {
+      currencyFrom = event.target.value;
+    } else {
+      currencyTo = event.target.value;
+    }
+    // пересчитываем сумму в другой валюте
+    convertCurrency();
+  }
+
+  // Обработчик изменения числа в поле (изменение типа: from или to)
+  function handleAmountChange(event, type) {
+    // меняем значение в зависимости от типа (from или to)
+    if (type === 'from') {
+      amountFrom = event.target.value;
+    } else {
+      amountTo = event.target.value;
+    }
+    // пересчитываем сумму в другой валюте
+    convertCurrency();
+  }
 
 </script>
 
@@ -16,25 +62,19 @@
       <h1 class="title__h1">Конвертер валют</h1>
     </div>
     <div class="currency">
-      <input type="number" id="amount-one" placeholder="0" value="1">
-      <select name="" id="currency-one">
-        <option value="USD" selected>USD</option>
-        <option value="EUR">EUR</option>
-        <option value="JPY">JPY</option>
-        <option value="RUB">RUB</option>
+      <input type="number" bind:value={amountFrom} on:input={(e) => handleAmountChange(e, 'from')} />
+      <select bind:value={currencyFrom} on:change={(e) => handleCurrencyChange(e, 'from')}>
+        {#each currencies as currency}
+          <option value={currency}>{currency}</option>
+        {/each}
       </select>
     </div>
-    <div class="swap-rate-container">
-      <div class="rate" id="rate"></div>
-      <button class="btn" id="swap">Обменять!</button>
-    </div>
     <div class="currency">
-      <input type="number" id="amount-two" placeholder="0">
-      <select name="" id="currency-two">
-        <option value="USD" >USD</option>
-        <option value="EUR">EUR</option>
-        <option value="JPY">JPY</option>
-        <option value="RUB" selected>RUB</option>
+      <input type="number" bind:value={amountTo} on:input={(e) => handleAmountChange(e, 'to')} />
+      <select bind:value={currencyTo} on:change={(e) => handleCurrencyChange(e, 'to')}>
+        {#each currencies as currency}
+          <option value={currency}>{currency}</option>
+        {/each}
       </select>
     </div>
   </div>
